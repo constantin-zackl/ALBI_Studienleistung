@@ -23,6 +23,7 @@ if (not(re.search(".fasta", seqname))):
     print("Error, please enter a correct sequence file name")
     print_usage()
     sys.exit()
+
 seqdata = open(seqname, "r")
 
 if (not(re.search(".", resname))):
@@ -51,9 +52,21 @@ for t in transition:
     transition[t] = countDiN[t] / countAll [t[0]]
 
 # write to textfile
-file = open("resname" + ".prob", "w")
-space = 5
+file = open(resname + ".prob", "w")
+space = "     "
+file.write("  ")
+for b in countAll:
+    file.write(b + space*5)
 
+file.write("\n")
+
+for b in countAll:
+    file.write(b + " ")
+    for c in countAll:
+        file.write(str(transition[""+b+c]) + space)
+    file.write("\n")
+
+print (transition)
 
 # close the file
 seqdata.close()
