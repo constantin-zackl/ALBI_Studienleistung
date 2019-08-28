@@ -7,10 +7,14 @@ minusname = "minus.prob"
 plus = {}
 minus = {}
 alphabet = ["A", "C", "G", "T"]
-windows = [51, 201, 501]
-sequenceName = sys.argv[1]
+windows = [51, 201, 401]
+sequenceName = sys.argv[1].strip(".").strip("\\") # remove .\\
 sequence = ""
 logratio = [[],[],[]]
+
+# print Usage
+def print_usage():
+    print ("Usage: <sequenceName.fasta>")
 
 # import markov model file
 try:
@@ -22,19 +26,21 @@ except:
 # check the sequence data
 if (not(re.search(".fasta", sequenceName))):
     print("Error, sequence must be .fasta file")
+    print_usag()
     sys.exit()
 
 sequencedata = open(sequenceName, "r")
 
 # import sequence data
 line = sequencedata.readline().rstrip("\n")
-while line!= "":
+while True:
     try:
-        if not(">" in line):
+        if line[0] != ">":
             sequence += line
     except:
-        break;
+        break
     line = sequencedata.readline().rstrip("\n")
+print("Imported the sequence")
 
 # import the plus model
 line = plusfile.readline()
@@ -52,21 +58,19 @@ for zeile in alphabet:
     for spalte in range(1, len(line)):
         minus[zeile][alphabet[spalte -1]] = float(line[spalte])
 
-# calc the log likelihood score
+print("Imported the Markov Models")
+
+# calc the log likelihood score and save the values to textfiles
 value = 0
-# for w in windows:
-for w in range(len(windows)):
-    print(windows[w])
+
+for w in range(len(windows)): # all window sizes
+    print("Running scan with window size " + str(windows[w]))
+    resultfile = open ("result_" + str(sequenceName).strip(".fasta") + "_" + str(windows[w]) + ".txt", "w")
     for i in range(0, len(sequence) - windows[w]):
-        for k in range(i, i+windows[w]):
-            value += math.log10((plus[sequence[i-1]][sequence [i]])/(minus[sequence[i-1]][sequence[i]]))
-            logratio[w].append(value)
+        for k in range(i, i+windows[w]-1):
+            value += math.log10((plus[sequence[k-1]][sequence [k]])/(minus[sequence[k-1]][sequence[k]]))
+        logratio[w].append(value)
+        resultfile.write(str(value)+"\n")
         value = 0
 
-# open files and write
-for i in range (len(windows)):
-    resultfile = open ("result" + str(windows[i]) + ".txt", "w")
-
-    for r in range(len(logratio)):
-        for x in range(len(logratio[r])):
-            resultfile.write(str(logratio[r][x]) + "\n")
+print ("Scan finished succesfully")

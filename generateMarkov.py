@@ -1,5 +1,3 @@
-# @author Constantin Zackl, TH Bingen 2019
-
 import sys, re
 
 # variables
@@ -8,10 +6,10 @@ resname = sys.argv[2]
 countAll = {"A":0, "C":0, "G":0, "T":0}
 countDiN = {"AA":0, "AC":0, "AG":0, "AT":0, "CA":0, "CC":0, "CG":0, "CT":0, "GA":0, "GC":0, "GG":0, "GT":0, "TA":0, "TC":0, "TG":0, "TT":0}
 transition = {"AA":0, "AC":0, "AG":0, "AT":0, "CA":0, "CC":0, "CG":0, "CT":0, "GA":0, "GC":0, "GG":0, "GT":0, "TA":0, "TC":0, "TG":0, "TT":0}
-# fuer die Übergangswahrrscheinlichkeiten werden alle ax etc gezählt
-# es langt also alle vorkommen an a c g  und t zu zählen wobei
+# fuer die Übergangswahrrscheinlichkeiten werden alle ax, x aus {A, C, G, T} gezählt
+# es langt jedoch alle vorkommen an a, c, g  und t zu zählen wobei
 # die letzte stelle ausgelassen werden muss da auf sie keine
-# Base mehr folgt
+# Base mehr folgt.
 sequence = ""
 
 # methods
@@ -28,9 +26,9 @@ seqdata = open(seqname, "r")
 
 if (not(re.search(".", resname))):
     print ("Error, no file endings for the result file")
+    sys.exit()
 
-
-# Datei einlesen, newlines entfernen
+# read the file and remove \n
 line = seqdata.readline().rstrip("\n")
 while line!= "":
     try:
@@ -46,8 +44,7 @@ for i in range (0, len(sequence)-1):
     countAll[sequence[i]] += 1
     countDiN["" + sequence[i] + sequence[i+1]] += 1
 
-# calculate the transition
-
+# calculate the transition probabilities
 for t in transition:
     transition[t] = countDiN[t] / countAll [t[0]]
 
@@ -66,7 +63,7 @@ for b in countAll:
         file.write(str(transition[""+b+c]) + space)
     file.write("\n")
 
-print (transition)
+print ("Succesfully generated Markov probabilities from file " + seqname)
 
 # close the file
 seqdata.close()
