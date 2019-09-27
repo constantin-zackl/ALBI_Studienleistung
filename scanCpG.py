@@ -6,7 +6,7 @@ minusname = "minus.prob"
 
 plus = {}
 minus = {}
-alphabet = ["A", "C", "G", "T"]
+alphabet = ["A", "C", "G", "T", "N"]
 windows = [51, 201, 401]
 sequenceName = sys.argv[1].strip(".").strip("\\") # remove .\\
 sequence = ""
@@ -26,7 +26,7 @@ except:
 # check the sequence data
 if (not(re.search(".fasta", sequenceName))):
     print("Error, sequence must be .fasta file")
-    print_usag()
+    print_usage()
     sys.exit()
 
 sequencedata = open(sequenceName, "r")

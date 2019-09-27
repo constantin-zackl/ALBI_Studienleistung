@@ -54,14 +54,24 @@ space = "     "
 file.write("  ")
 for b in countAll:
     file.write(b + space*5)
-
+file.write("N") # in case N is used for any Base in the sequence files
 file.write("\n")
 
+ntransition = 0
 for b in countAll:
     file.write(b + " ")
     for c in countAll:
+        ntransition += transition[""+b+c]
         file.write(str(transition[""+b+c]) + space)
-    file.write("\n")
+    file.write(str(ntransition)+"\n")
+    ntransition = 0
+
+file.write("N ")
+file.write(str(transition["AA"] + transition["CA"] + transition["GA"] + transition["TA"]) + space)
+file.write(str(transition["AC"] + transition["CC"] + transition["GC"] + transition["TC"]) + space)
+file.write(str(transition["AG"] + transition["CG"] + transition["GG"] + transition["TG"]) + space)
+file.write(str(transition["AT"] + transition["CT"] + transition["GT"] + transition["TT"]) + space)
+file.write("1") # the probability of any base to another is 1
 
 print ("Succesfully generated Markov probabilities from file " + seqname)
 
